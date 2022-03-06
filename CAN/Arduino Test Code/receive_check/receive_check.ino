@@ -54,7 +54,7 @@ void loop() {
         CAN.readMsgBuf(&len, buf);    // read data,  len: data length, buf: data buf
 
         unsigned long canId = CAN.getCanId();
-
+        // if canID is BBB, then let message through, else ignore -> we don't care about data from other sensors
         SERIAL_PORT_MONITOR.println("-----------------------------");
         SERIAL_PORT_MONITOR.print("Get data from ID: 0x");
         SERIAL_PORT_MONITOR.println(canId, HEX);
