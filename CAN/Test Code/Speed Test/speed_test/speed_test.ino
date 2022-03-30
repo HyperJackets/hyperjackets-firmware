@@ -47,24 +47,29 @@ void setup() {
     SERIAL_PORT_MONITOR.println("CAN init ok!");
 }
 
-unsigned char stmp[8] = {0, 0, 0, 0, 0, 0, 0, 0};
-// reads data from ultrasonic sensor and sends it to the beaglebone black
+unsigned char stmp[2] = {0, 0};
+long cur = 0;
+unsigned long prev_time = millis();
+unsigned long end_time = 0;
+unsigned long start_time = 0;
 void loop() {
     // send data:  id = 0x00, standrad frame, data len = 8, stmp: data buf
-    stmp[7] = stmp[7] + 1;
-    if (stmp[7] == 100) {
-        stmp[7] = 0;
-        stmp[6] = stmp[6] + 1;
-
-        if (stmp[6] == 100) {
-            stmp[6] = 0;
-            stmp[5] = stmp[5] + 1;
-        }
+    if (cur == 0) {
+      start_time = millis();
+    }
+    cur++;
+    stmp[0] = cur; // First byte is count of message
+    prev_time = millis();
+    CAN.sendMsgBuf(0x00, 0, 2, stmp); 
+    // delay(100);                       // send data per 100ms
+    stmp[1] = millis() - prev_time; // Second byte is time taken to send previous message
+    if (cur == 10000) {
+      end_time = millis();
+      unsigned long total_time = (end_time - start_time) / 1000;
+      SERIAL_PORT_MONITOR.println("10000 Messages sent. Time taken: " + total_time);
+      cur = 0;      
     }
 
-    CAN.sendMsgBuf(0x00, 0, 8, stmp);
-    delay(100);                       // send data per 100ms
-    SERIAL_PORT_MONITOR.println("CAN BUS sendMsgBuf ok!");
 }
 
 // END FILE
