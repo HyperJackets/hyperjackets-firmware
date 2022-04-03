@@ -61,12 +61,13 @@ void loop() {
     stmp[0] = cur; // First byte is count of message
     prev_time = millis();
     CAN.sendMsgBuf(0x00, 0, 2, stmp); 
+    Serial.println("Message sent!");
     // delay(100);                       // send data per 100ms
     stmp[1] = millis() - prev_time; // Second byte is time taken to send previous message
-    if (cur == 10000) {
+    if (cur == 255) {
       end_time = millis();
-      unsigned long total_time = (end_time - start_time) / 1000;
-      SERIAL_PORT_MONITOR.println("10000 Messages sent. Time taken: " + total_time);
+      unsigned long total_time = (end_time - start_time) / 256;
+      SERIAL_PORT_MONITOR.println("Ten thousand Messages sent. Time taken: " + total_time);
       cur = 0;      
     }
 
