@@ -40,7 +40,7 @@ void setup() {
     SERIAL_PORT_MONITOR.begin(115200);
     while(!Serial){};
 
-    while (CAN_OK != CAN.begin(CAN_125KBPS)) {             // init can bus : baudrate = 125k bc thats the configuration on BBB
+    while (CAN_OK != CAN.begin(CAN_1000KBPS)) {             // init can bus : baudrate = 125k bc thats the configuration on BBB
         SERIAL_PORT_MONITOR.println(" CAN init fail, retry...");
         delay(100);
     }
